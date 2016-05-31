@@ -40,7 +40,8 @@ public class GameState extends State {
 
     @Override
     protected void dispose() {
-
+        puppy.dispose();
+        System.out.println("Disposed Gamestate");
     }
 
 }

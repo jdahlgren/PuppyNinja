@@ -3,6 +3,7 @@
  */
 package se.johannesdahlgren.puppyninja.states;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -21,12 +22,14 @@ public class MenuState extends State {
 
     @Override
     public void handleInput() {
-
+        if (Gdx.input.justTouched()) {
+            gsm.set(new GameState(gsm));
+        }
     }
 
     @Override
     public void update(float dt) {
-
+        handleInput();
     }
 
     @Override
@@ -41,6 +44,7 @@ public class MenuState extends State {
 
     @Override
     protected void dispose() {
-
+        background.dispose();
+        playBtn.dispose();
     }
 }

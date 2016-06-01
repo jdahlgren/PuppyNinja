@@ -9,10 +9,10 @@ import java.util.Stack;
 
 public class GameStateManager {
 
-    public Stack<State> states;
+    private Stack<State> states;
 
     public GameStateManager() {
-        states = new Stack<State>();
+        states = new Stack<>();
     }
 
     public void pop(){

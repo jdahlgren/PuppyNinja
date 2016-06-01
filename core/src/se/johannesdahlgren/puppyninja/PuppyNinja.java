@@ -3,10 +3,8 @@ package se.johannesdahlgren.puppyninja;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import se.johannesdahlgren.puppyninja.sprites.Puppy;
 import se.johannesdahlgren.puppyninja.states.GameStateManager;
 import se.johannesdahlgren.puppyninja.states.MenuState;
 

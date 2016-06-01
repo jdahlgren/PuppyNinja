@@ -11,8 +11,8 @@ import se.johannesdahlgren.puppyninja.PuppyNinja;
 
 public class MenuState extends State {
 
-    private Texture background;
-    private Texture playBtn;
+    private final Texture background;
+    private final Texture playBtn;
 
     public MenuState(GameStateManager gsm) {
         super(gsm);

@@ -6,6 +6,9 @@ package se.johannesdahlgren.puppyninja.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Random;
@@ -17,18 +20,25 @@ public class GameState extends State {
 
     private static final int MAX_TEXTURES = 2;
     private final Texture background;
+    private final Texture pauseButton;
+    private final Rectangle pauseRect;
     private Array<Texture> puppyTextures;
     private Random random;
     private Array<Puppy> puppies;
     private boolean isPaused;
+    private ShapeRenderer sr;
 
     protected GameState(GameStateManager gsm) {
         super(gsm);
         isPaused = false;
         random = new Random();
         background = new Texture("background.jpg");
+        pauseButton = new Texture("pausebutton.png");
+        pauseRect = new Rectangle(PuppyNinja.WIDTH - pauseButton.getWidth(), PuppyNinja.HEIGHT - pauseButton.getHeight(), pauseButton.getWidth(), pauseButton.getHeight());
+        
         puppyTextures = new Array<>();
         puppies = new Array<>();
+        sr = new ShapeRenderer();
 
         for (int i = 1; i <= MAX_TEXTURES; i++) {
             puppyTextures.add(new Texture("puppy" + i + ".png"));
@@ -38,7 +48,21 @@ public class GameState extends State {
     @Override
     protected void handleInput() {
         if (Gdx.input.justTouched()) {
-            isPaused = !isPaused;
+            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+
+            if (pauseRect.contains(touchPos.x, touchPos.y)) {
+                isPaused = !isPaused;
+            }
+
+
+            if (!isPaused) {
+                for (Puppy puppy : puppies) {
+                    if (puppy.getBoundingBox().contains(touchPos.x, touchPos.y)) {
+                        puppy.setDead(true);
+                    }
+                }
+            }
         }
     }
 
@@ -58,11 +82,29 @@ public class GameState extends State {
     @Override
     protected void render(SpriteBatch sb) {
         sb.setProjectionMatrix(camera.combined);
-        sb.begin();
+        sr.setProjectionMatrix(camera.combined);
         camera.setToOrtho(false, PuppyNinja.WIDTH, PuppyNinja.HEIGHT);
+
+        // Draw background & pause
+        sb.begin();
         sb.draw(background, 0, 0, PuppyNinja.WIDTH, PuppyNinja.HEIGHT);
+        sb.draw(pauseButton, PuppyNinja.WIDTH - pauseButton.getWidth(), PuppyNinja.HEIGHT - pauseButton.getHeight(), pauseButton.getWidth(), pauseButton.getHeight());
+        sb.end();
+
+        // Draw Boundingboxes
+        sr.setColor(0, 1, 0, 1);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
         for (Puppy puppy : puppies) {
-            sb.draw(puppy.getTexture(), puppy.getPosition().x, puppy.getPosition().y);
+            sr.rect(puppy.getBoundingBox().getX(), puppy.getBoundingBox().getY(), puppy.getBoundingBox().getWidth(), puppy.getBoundingBox().getHeight());
+        }
+        sr.end();
+
+        // Draw alive puppies
+        sb.begin();
+        for (Puppy puppy : puppies) {
+            if (!puppy.isDead()) {
+                sb.draw(puppy.getTexture(), puppy.getPosition().x, puppy.getPosition().y);
+            }
         }
         sb.end();
     }

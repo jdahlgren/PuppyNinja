@@ -4,6 +4,7 @@
 package se.johannesdahlgren.puppyninja.sprites;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import se.johannesdahlgren.puppyninja.PuppyNinja;
@@ -19,11 +20,16 @@ public class Puppy {
     private Vector2 position;
     private Vector2 velocity;
     private Texture puppyTexture;
+    private Rectangle boundingBox;
+    private boolean isDead;
+
 
     public Puppy(int x, int y, Texture texture) {
         position = new Vector2(x, y);
         velocity = new Vector2(0, 0);
         puppyTexture = texture;
+        boundingBox = new Rectangle(x, y, puppyTexture.getWidth(), puppyTexture.getHeight());
+        isDead = false;
     }
 
     public void update(float dt) {
@@ -32,12 +38,15 @@ public class Puppy {
         }
         velocity.scl(dt);
         position.add(0, velocity.y);
+        boundingBox.y = position.y;
+
         velocity.scl(1 / dt);
         if (position.y < OUT_OF_PICTURE_Y) {
             position.y = 0;
         }
         if (position.x > PUPPY_TEXTURE_OFFSET_X_RIGHT) {
             position.x = PUPPY_TEXTURE_OFFSET_X_RIGHT;
+            boundingBox.x = position.x;
         }
     }
 
@@ -47,5 +56,17 @@ public class Puppy {
 
     public Texture getTexture() {
         return puppyTexture;
+    }
+
+    public Rectangle getBoundingBox() {
+        return boundingBox;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void setDead(boolean dead) {
+        isDead = dead;
     }
 }

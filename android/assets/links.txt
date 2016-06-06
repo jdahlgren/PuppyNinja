@@ -2,3 +2,4 @@ BG - https://pixabay.com/en/park-sunset-at-dusk-sepia-wood-1005973/
 puppy1 - https://pixabay.com/en/dog-doggie-bone-dog-collar-cub-1305702/
 puppy2 - https://pixabay.com/en/english-bulldog-baby-mammal-puppy-733876/
 start - https://pixabay.com/en/play-music-movies-portable-display-468292/
+pause - https://pixabay.com/en/audio-pause-sound-video-button-158490/

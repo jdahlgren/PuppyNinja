@@ -4,11 +4,15 @@
 package se.johannesdahlgren.puppyninja.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Random;
@@ -26,16 +30,24 @@ public class GameState extends State {
     private Random random;
     private Array<Puppy> puppies;
     private boolean isPaused;
+    private Long score;
     private ShapeRenderer sr;
+    private BitmapFont scoreFont;
+    private GlyphLayout glyphLayout;
 
     protected GameState(GameStateManager gsm) {
         super(gsm);
         isPaused = false;
+        score = 0L;
         random = new Random();
         background = new Texture("background.jpg");
         pauseButton = new Texture("pausebutton.png");
         pauseRect = new Rectangle(PuppyNinja.WIDTH - pauseButton.getWidth(), PuppyNinja.HEIGHT - pauseButton.getHeight(), pauseButton.getWidth(), pauseButton.getHeight());
-        
+        glyphLayout = new GlyphLayout();
+        scoreFont = new BitmapFont();
+        scoreFont.setColor(Color.MAGENTA);
+        scoreFont.getData().setScale(10);
+
         puppyTextures = new Array<>();
         puppies = new Array<>();
         sr = new ShapeRenderer();
@@ -60,6 +72,7 @@ public class GameState extends State {
                 for (Puppy puppy : puppies) {
                     if (puppy.getBoundingBox().contains(touchPos.x, touchPos.y)) {
                         puppy.setDead(true);
+                        score++;
                     }
                 }
             }
@@ -76,6 +89,7 @@ public class GameState extends State {
             for (Puppy puppy : puppies) {
                 puppy.update(dt);
             }
+            glyphLayout.setText(scoreFont, score.toString());
         }
     }
 
@@ -107,6 +121,11 @@ public class GameState extends State {
             }
         }
         sb.end();
+
+        //Draw score and lives
+        sb.begin();
+        scoreFont.draw(sb, glyphLayout, glyphLayout.width, PuppyNinja.HEIGHT - glyphLayout.height);
+        sb.end();
     }
 
     @Override
@@ -118,7 +137,7 @@ public class GameState extends State {
         System.out.println("Disposed Gamestate");
     }
 
-    private void resetPuppies() {
+    private void    resetPuppies() {
         puppies.clear();
         addNewPuppies();
     }
